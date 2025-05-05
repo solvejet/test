@@ -1,13 +1,12 @@
 // src/components/layout/Header.tsx
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import SolveJetLogo from '../ui/SolveJetLogo';
 import ThemeToggle from '../ThemeToggle';
-import { useScrollPosition, useScrollLock } from '@/utils/scrollUtils';
 import MobileMenu from './MobileMenu';
 
 interface NavItem {
@@ -23,16 +22,26 @@ const navItems: NavItem[] = [
         subItems: [
             { name: 'Custom Development', href: '/what-we-do/custom-development' },
             { name: 'Cloud Solutions', href: '/what-we-do/cloud-solutions' },
-            { name: 'Digital Transformation', href: '/what-we-do/digital-transformation' },
+            { name: 'Technology Consulting', href: '/what-we-do/technology-consulting' },
+            { name: 'MVP Development', href: '/what-we-do/mvp-development' },
+            { name: 'IT Staff Augmentation', href: '/what-we-do/staff-augmentation' },
+            { name: 'Web Development', href: '/what-we-do/web-development' },
+            { name: 'Mobile App Development', href: '/what-we-do/app-development' },
+            { name: 'AI/ML Solutions', href: '/what-we-do/ai-ml' },
+
         ]
     },
     {
         name: 'Industries',
         href: '/industries',
         subItems: [
-            { name: 'Healthcare', href: '/industries/healthcare' },
-            { name: 'Finance', href: '/industries/finance' },
+            { name: 'Real Estate', href: '/industries/real-estate' },
+            { name: 'Manufacturing', href: '/industries/manufacturing' },
             { name: 'E-commerce', href: '/industries/e-commerce' },
+            { name: 'Logistics', href: '/industries/logistics' },
+            { name: 'Travel & Hospitality', href: '/industries/travel-hospitality' },
+            { name: 'Education', href: '/industries/education' },
+            { name: 'Retail', href: '/industries/retail' },
         ]
     },
     {
@@ -56,44 +65,56 @@ const navItems: NavItem[] = [
 
 export default function Header() {
     const pathname = usePathname();
-    const isScrolled = useScrollPosition(10);
+    const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-    const { lockScroll, unlockScroll } = useScrollLock();
+    const headerRef = useRef<HTMLElement>(null);
+    const mobileButtonRef = useRef<HTMLButtonElement>(null);
 
-    // Fixed toggleMobileMenu function
-    const toggleMobileMenu = useCallback(() => {
-        setMobileMenuOpen((prevState) => {
-            const newState = !prevState;
-            if (newState) {
-                // Need to wait for state update before locking scroll
-                setTimeout(() => lockScroll(), 0);
-            } else {
-                unlockScroll();
-            }
-            return newState;
-        });
-    }, [lockScroll, unlockScroll]);
-
-    // Reset mobile menu state on mount
+    // Set CSS variable for header height and track scroll position
     useEffect(() => {
-        setMobileMenuOpen(false);
-        // Ensure scroll is unlocked when component mounts
-        unlockScroll();
+        // Set the header height CSS variable when the component mounts
+        if (headerRef.current) {
+            const headerHeight = headerRef.current.offsetHeight;
+            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+        }
 
-        // Clean up function to ensure scroll is restored when component unmounts
-        return () => {
-            unlockScroll();
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
         };
-    }, [unlockScroll]);
+
+        const handleResize = () => {
+            if (headerRef.current) {
+                const headerHeight = headerRef.current.offsetHeight;
+                document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+            }
+        };
+
+        // Add event listeners
+        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("resize", handleResize);
+
+        // Check initial scroll position
+        handleScroll();
+
+        // Clean up event listeners
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     // Close mobile menu on route change
     useEffect(() => {
-        if (mobileMenuOpen) {
-            setMobileMenuOpen(false);
-            unlockScroll();
-        }
-    }, [pathname, mobileMenuOpen, unlockScroll]);
+        setMobileMenuOpen(false);
+    }, [pathname]);
+
+    // Toggle mobile menu with fixed behavior
+    const toggleMobileMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setMobileMenuOpen(!mobileMenuOpen);
+    };
 
     // Handle dropdown toggling for desktop navigation
     const toggleDropdown = (name: string) => {
@@ -103,7 +124,8 @@ export default function Header() {
     return (
         <>
             <header
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+                ref={headerRef}
+                className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
                     ? 'bg-light-background/85 dark:bg-dark-background/85 header-blur shadow-sm'
                     : 'bg-transparent'
                     }`}
@@ -191,8 +213,9 @@ export default function Header() {
                                 <ThemeToggle />
                             </div>
 
-                            {/* Improved Mobile Menu Button with animation */}
+                            {/* Mobile Menu Button with animation */}
                             <button
+                                ref={mobileButtonRef}
                                 className="mobile-menu-toggle md:hidden text-light-text-primary dark:text-dark-text-primary p-2 hover:bg-light-surface dark:hover:bg-dark-surface/50 rounded-lg transition-colors relative focus:outline-none focus:ring-2 focus:ring-primary-blue focus-ring"
                                 onClick={toggleMobileMenu}
                                 aria-label="Toggle menu"
@@ -227,10 +250,7 @@ export default function Header() {
             {/* Mobile Menu Component */}
             <MobileMenu
                 isOpen={mobileMenuOpen}
-                onCloseAction={() => {
-                    setMobileMenuOpen(false);
-                    unlockScroll();
-                }}
+                onCloseAction={() => setMobileMenuOpen(false)}
                 navItems={navItems}
             />
         </>

@@ -9,16 +9,22 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   buildExcludes: [/middleware-manifest\.json$/],
+
+  // Important: Add explicit fallbacks
   fallbacks: {
-    document: "/offline",
+    document: "/offline", // When a page request fails
     image: "/images/fallback.png",
     font: "/fonts/fallback.woff2",
   },
+
+  // Add this to enable caching during front-end navigation
+  cacheOnFrontEndNav: true,
+
   // Force production mode for service worker even in development
   // This can help resolve offline page issues
   mode: "production",
-  // This can help with caching pages you visit via client-side navigation
-  cacheOnFrontEndNav: true,
+
+  // Improve runtime caching configuration
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
@@ -87,6 +93,7 @@ const withPWA = require("next-pwa")({
       },
     },
     {
+      // Important: Added 200/404 status codes for route caching to work properly
       urlPattern: /\/_next\/data\/.+\/.+\.json$/i,
       handler: "NetworkFirst",
       options: {
@@ -94,6 +101,9 @@ const withPWA = require("next-pwa")({
         expiration: {
           maxEntries: 32,
           maxAgeSeconds: 60 * 60, // 1 hour
+        },
+        cacheableResponse: {
+          statuses: [200, 404],
         },
       },
     },
@@ -110,6 +120,8 @@ const withPWA = require("next-pwa")({
       },
     },
     {
+      // This is a catch-all for HTML pages
+      // Make sure to cache all pages with 200 response
       urlPattern: /.*/i,
       handler: "NetworkFirst",
       options: {
@@ -119,6 +131,9 @@ const withPWA = require("next-pwa")({
           maxAgeSeconds: 60 * 60 * 24, // 1 day
         },
         networkTimeoutSeconds: 10,
+        cacheableResponse: {
+          statuses: [200],
+        },
       },
     },
   ],

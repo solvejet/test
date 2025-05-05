@@ -132,17 +132,58 @@ body {
   width: 100%;
 }
 
-/* Glassmorphism styles */
-.glassmorphism {
-  background: rgba(255, 255, 255, 0.1);
+/* Enhanced Glassmorphism styles */
+
+/* Light mode glassmorphism */
+.light-glassmorphism {
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(234, 236, 239, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode glassmorphism */
+.dark .dark-glassmorphism {
+  background: rgba(33, 33, 33, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 51, 51, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Standard glassmorphism that adapts to light/dark mode */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(234, 236, 239, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glassmorphism {
-  background: rgba(20, 20, 20, 0.6);
+  background: rgba(33, 33, 33, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 51, 51, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional animations for menu items */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.5s ease forwards;
 }
 
 /* Background position utilities */
@@ -158,8 +199,46 @@ body {
   background-position: 100% 100%;
 }
 
-/* Focus styles */
+/* Improved focus-ring styling */
 .focus-ring:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(60, 134, 255, 0.4);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Fancy gradient borders */
+.gradient-border-b {
+  position: relative;
+}
+
+.gradient-border-b::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(var(--border-color), 0.5), transparent);
+}
+
+/* Improved menu item hover effects */
+.menu-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: rgb(var(--accent-color));
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.menu-item:hover::after {
+  width: 100%;
 }

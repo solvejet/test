@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import './globals.css';
 import NonceProvider from '@/components/NonceProvider';
 import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -119,37 +120,17 @@ export default async function RootLayout({
       </head>
       <body className={inter.className}>
         <NonceProvider nonce={nonce}>
-          <div className="min-h-screen bg-solvejet-light-white dark:bg-solvejet-dark-grey">
-
-            {/* Using our new Header component */}
+          <div className="min-h-screen flex flex-col bg-light-background dark:bg-dark-background">
+            {/* Header component */}
             <Header />
 
-
-            <main className="container mx-auto px-4 py-8">
+            {/* Main content */}
+            <main className="container mx-auto px-4 py-8 flex-grow">
               {children}
             </main>
 
-            <footer className="border-t border-solvejet-light-off-white dark:border-solvejet-secondary-dark bg-white dark:bg-solvejet-dark-grey mt-16">
-              <div className="container mx-auto px-4 py-10">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  <div>
-                    <h3 className="text-lg font-semibold text-solvejet-light-dark-grey dark:text-solvejet-light-grey mb-4">
-                      Contact
-                    </h3>
-                    <ul className="space-y-2 text-solvejet-light-medium-dark dark:text-solvejet-medium-grey">
-                      <li>info@solvejet.net</li>
-                      <li>+1 (555) 123-4567</li>
-                      <li>123 Tech Park Avenue,</li>
-                      <li>San Francisco, CA 94103</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="border-t border-solvejet-light-off-white dark:border-solvejet-secondary-dark mt-8 pt-6 text-center text-solvejet-light-medium-dark dark:text-solvejet-medium-grey">
-                  © {new Date().getFullYear()} SolveJet. All rights reserved.
-                </div>
-              </div>
-            </footer>
+            {/* Footer component */}
+            <Footer />
           </div>
         </NonceProvider>
       </body>
