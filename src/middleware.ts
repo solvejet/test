@@ -40,14 +40,24 @@ const publicRoutes = [
   "/",
   "/about",
   "/contact",
-  "/solutions",
   "/blog",
   "/offline",
   "/sitemap",
-  "/api/public",
   "/api/placeholder",
-  "/get-started",
-  "/learn-more", // Added missing routes
+  "/what-we-do",
+  "/industries",
+  "/methodology",
+  "/case-studies",
+  // Add any sub-routes
+  "/what-we-do/custom-development",
+  "/what-we-do/cloud-solutions",
+  "/what-we-do/digital-transformation",
+  "/industries/healthcare",
+  "/industries/finance",
+  "/industries/e-commerce",
+  "/methodology/agile",
+  "/methodology/devops",
+  "/methodology/qa",
 ];
 
 // Secret key for JWT verification - in production, use environment variables
@@ -59,14 +69,32 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const response = NextResponse.next();
 
-  // Skip middleware for static files
+  // Skip middleware for static files and API routes that don't need auth
   if (
     pathname.startsWith("/_next") ||
     pathname.includes(".") ||
     pathname.startsWith("/icons") ||
     pathname.startsWith("/images") ||
-    pathname.startsWith("/fonts")
+    pathname.startsWith("/fonts") ||
+    pathname.startsWith("/api/public") ||
+    pathname.startsWith("/api/placeholder")
   ) {
+    // Apply security headers
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+      if (key === "Content-Security-Policy") {
+        // Generate a nonce for CSP
+        const nonce = nanoid();
+        const cspWithNonce = value.replace(
+          /'nonce-PLACEHOLDER'/g,
+          `'nonce-${nonce}'`
+        );
+        response.headers.set(key, cspWithNonce);
+        response.headers.set("X-CSP-Nonce", nonce);
+      } else {
+        response.headers.set(key, value);
+      }
+    });
+
     return response;
   }
 
@@ -110,7 +138,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // For API routes, check for API key if it's not an authenticated endpoint
-  if (pathname.startsWith("/api/public")) {
+  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/public")) {
     const apiKey = request.headers.get("x-api-key");
     if (!validateApiKey(apiKey)) {
       return new NextResponse(

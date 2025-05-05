@@ -1,7 +1,7 @@
 // src/components/layout/Header.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
@@ -61,31 +61,39 @@ export default function Header() {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const { lockScroll, unlockScroll } = useScrollLock();
 
-    // Reset mobile menu state on mount
-    useEffect(() => {
-        setMobileMenuOpen(false);
-        return () => { }; // Explicit empty return for TypeScript
-    }, []);
-
-    // Handle mobile menu toggle with scroll lock
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(prevState => {
+    // Fixed toggleMobileMenu function
+    const toggleMobileMenu = useCallback(() => {
+        setMobileMenuOpen((prevState) => {
             const newState = !prevState;
             if (newState) {
-                lockScroll();
+                // Need to wait for state update before locking scroll
+                setTimeout(() => lockScroll(), 0);
             } else {
                 unlockScroll();
             }
             return newState;
         });
-    };
+    }, [lockScroll, unlockScroll]);
+
+    // Reset mobile menu state on mount
+    useEffect(() => {
+        setMobileMenuOpen(false);
+        // Ensure scroll is unlocked when component mounts
+        unlockScroll();
+
+        // Clean up function to ensure scroll is restored when component unmounts
+        return () => {
+            unlockScroll();
+        };
+    }, [unlockScroll]);
 
     // Close mobile menu on route change
     useEffect(() => {
-        setMobileMenuOpen(false);
-        unlockScroll();
-        return () => { }; // Explicit empty return for TypeScript
-    }, [pathname, unlockScroll]);
+        if (mobileMenuOpen) {
+            setMobileMenuOpen(false);
+            unlockScroll();
+        }
+    }, [pathname, mobileMenuOpen, unlockScroll]);
 
     // Handle dropdown toggling for desktop navigation
     const toggleDropdown = (name: string) => {
@@ -164,7 +172,7 @@ export default function Header() {
                             {/* Get Started Button - Desktop with improved styling */}
                             <div className="hidden md:flex items-center">
                                 <Link
-                                    href="/get-started"
+                                    href="/contact"
                                     className="btn-talk-primary flex items-center justify-center space-x-1 px-5 py-2.5 bg-primary-blue text-white rounded-full text-sm font-medium overflow-hidden relative"
                                 >
                                     <span className="relative z-10">Let&apos;s Talk</span>
@@ -189,27 +197,27 @@ export default function Header() {
                                 onClick={toggleMobileMenu}
                                 aria-label="Toggle menu"
                                 aria-expanded={mobileMenuOpen}
+                                type="button"
                             >
-                                <div className="relative w-6 h-6 flex items-center justify-center group">
+                                <div className="relative w-6 h-6 flex items-center justify-center">
                                     {/* Top Line */}
                                     <span
                                         className={`absolute h-0.5 w-6 bg-current rounded transition-transform duration-300 ease-in-out 
-      ${mobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'}`}
+                                        ${mobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'}`}
                                     />
 
                                     {/* Middle Line (Shorter) */}
                                     <span
                                         className={`absolute h-0.5 w-4 bg-current rounded transition-all duration-300 ease-in-out 
-      ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}
+                                        ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}
                                     />
 
                                     {/* Bottom Line */}
                                     <span
                                         className={`absolute h-0.5 w-6 bg-current rounded transition-transform duration-300 ease-in-out 
-      ${mobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'}`}
+                                        ${mobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'}`}
                                     />
                                 </div>
-
                             </button>
                         </div>
                     </div>

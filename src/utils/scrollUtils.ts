@@ -33,6 +33,12 @@ export function useElementInView(
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      // Fallback for environments without IntersectionObserver
+      setIsInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsInView(entry?.isIntersecting ?? false);
@@ -55,19 +61,62 @@ export function useElementInView(
   return isInView;
 }
 
-// Utility to manage scroll locking (useful for mobile menu)
+// Improved utility to manage scroll locking (useful for mobile menu)
 export function useScrollLock() {
+  // Keep track of the lock state to prevent duplicate calls
+  const [isLocked, setIsLocked] = useState(false);
+
+  // Store the original body overflow and padding
+  const [originalStyles, setOriginalStyles] = useState({
+    overflow: "",
+    paddingRight: "",
+  });
+
+  // Fixed lockScroll function that handles browser-specific issues
   const lockScroll = () => {
+    if (isLocked || typeof window === "undefined") return; // Prevent duplicate lock calls and check for SSR
+
+    setOriginalStyles({
+      overflow: document.body.style.overflow || "",
+      paddingRight: document.body.style.paddingRight || "",
+    });
+
+    // Calculate scrollbar width to prevent layout shift
     const scrollBarWidth =
       window.innerWidth - document.documentElement.clientWidth;
+
+    // Apply lock styles
     document.body.style.overflow = "hidden";
-    document.body.style.paddingRight = `${scrollBarWidth}px`;
+    if (scrollBarWidth > 0) {
+      document.body.style.paddingRight = `${scrollBarWidth}px`;
+    }
+
+    // Set state AFTER styles are applied to ensure consistency
+    setIsLocked(true);
   };
 
+  // Fixed unlockScroll function
   const unlockScroll = () => {
-    document.body.style.overflow = "";
-    document.body.style.paddingRight = "";
+    if (!isLocked || typeof window === "undefined") return; // Only unlock if currently locked and check for SSR
+
+    // Restore original styles
+    document.body.style.overflow = originalStyles.overflow;
+    document.body.style.paddingRight = originalStyles.paddingRight;
+
+    // Reset state AFTER styles are restored
+    setIsLocked(false);
   };
 
-  return { lockScroll, unlockScroll };
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      // Safety check to ensure scroll is always restored when component unmounts
+      if (isLocked && typeof window !== "undefined") {
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+      }
+    };
+  }, [isLocked]);
+
+  return { lockScroll, unlockScroll, isLocked };
 }

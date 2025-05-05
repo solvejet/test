@@ -14,6 +14,11 @@ const withPWA = require("next-pwa")({
     image: "/images/fallback.png",
     font: "/fonts/fallback.woff2",
   },
+  // Force production mode for service worker even in development
+  // This can help resolve offline page issues
+  mode: "production",
+  // This can help with caching pages you visit via client-side navigation
+  cacheOnFrontEndNav: true,
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
@@ -191,6 +196,26 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  // Add explicit rewrites to handle 404 errors
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Handle any missing paths in the app directory
+        {
+          source: "/:path*",
+          destination: "/:path*", // Just pass it along to let Next.js handle the routing
+        },
+      ],
+      fallback: [
+        // Fallback to the Offline page for any unmatched paths in production
+        // only when network is unavailable
+        {
+          source: "/:path*",
+          destination: process.env.NODE_ENV === "production" ? "/offline" : "/",
+        },
+      ],
+    };
   },
 };
 

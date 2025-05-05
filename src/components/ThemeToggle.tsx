@@ -54,10 +54,14 @@ export default function ThemeToggle() {
 
     return (
         <button
-            onClick={toggleTheme}
+            onClick={(e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                toggleTheme();
+            }}
             className="p-2 rounded-full hover:bg-light-surface/70 dark:hover:bg-dark-surface/70 text-light-text-primary dark:text-dark-text-primary transition-all duration-300 transform hover:shadow-md"
             aria-label="Toggle theme"
             disabled={isAnimating}
+            type="button"
         >
             <div className={`relative transition-transform duration-700 ${isAnimating ? (darkMode ? 'rotate-[360deg]' : 'rotate-[-360deg]') : ''}`}>
                 {darkMode ? (
