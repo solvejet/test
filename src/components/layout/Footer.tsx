@@ -16,6 +16,7 @@ import {
     ExternalLink
 } from 'lucide-react';
 import SolveJetLogo from '../ui/SolveJetLogo';
+import Image from 'next/image';
 
 interface FooterLinkProps {
     href: string;
@@ -411,9 +412,27 @@ export default function Footer() {
                                 <SolveJetLogo className="h-6 w-auto mr-2 text-light-text-muted dark:text-dark-text-muted opacity-80" />
                                 <span className="border-l border-light-border/30 dark:border-dark-border/30 pl-2 ml-2">© {currentYear} All rights reserved.</span>
                             </div>
-                            <p>
-                                ISO 27001:2022 Certified • Google Partner • 4.9/5 on Clutch
-                            </p>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                <p>
+                                    ISO 27001:2022 Certified • Google Partner • 4.9/5 on Clutch
+                                </p>
+                                {/* DMCA Badge */}
+                                <div className="dmca-badge-container">
+                                    <a
+                                        href="//www.dmca.com/Protection/Status.aspx?ID=8d403873-c871-4d0c-ae14-308185830d09"
+                                        title="DMCA.com Protection Status"
+                                        className="dmca-badge inline-block"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Image
+                                            src="https://images.dmca.com/Badges/dmca-badge-w100-5x1-08.png?ID=8d403873-c871-4d0c-ae14-308185830d09"
+                                            alt="DMCA.com Protection Status"
+                                            className="h-5 w-auto"
+                                        />
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Legal links with dividers */}

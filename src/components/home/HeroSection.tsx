@@ -14,7 +14,7 @@ const rotatingWords = [
 ];
 
 export default function HeroSection(): JSX.Element {
-    const [scrollY, setScrollY] = useState(0);
+    const [, setScrollY] = useState(0);
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [isChangingWord, setIsChangingWord] = useState(false);
     const heroRef = useRef<HTMLDivElement>(null);

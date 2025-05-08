@@ -168,8 +168,8 @@ const nextConfig: NextConfig = {
 
     // Add 'unsafe-eval' only in development mode
     const scriptSrc = isDevelopment
-      ? "'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co"
-      : "'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co";
+      ? "'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co https://images.dmca.com https://*.dmca.com"
+      : "'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co https://images.dmca.com https://*.dmca.com";
 
     return [
       {
@@ -182,9 +182,9 @@ const nextConfig: NextConfig = {
               `script-src ${scriptSrc}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.solvejet.net https://*.clutch.co https://*.goodfirms.co https://www.google-analytics.com https://www.googletagmanager.com",
-              "connect-src 'self' https://*.solvejet.net https://api.solvejet.net https://*.clutch.co https://*.goodfirms.co https://cdn.amplitude.com https://amplitude.com https://www.google-analytics.com https://www.googletagmanager.com",
-              "frame-src 'self' https://*.clutch.co https://*.goodfirms.co https://widget.clutch.co https://widget.goodfirms.co",
+              "img-src 'self' data: blob: https://*.solvejet.net https://*.clutch.co https://*.goodfirms.co https://www.google-analytics.com https://www.googletagmanager.com https://images.dmca.com https://*.dmca.com",
+              "connect-src 'self' https://*.solvejet.net https://api.solvejet.net https://*.clutch.co https://*.goodfirms.co https://cdn.amplitude.com https://amplitude.com https://www.google-analytics.com https://www.googletagmanager.com https://images.dmca.com https://*.dmca.com",
+              "frame-src 'self' https://*.clutch.co https://*.goodfirms.co https://widget.clutch.co https://widget.goodfirms.co https://images.dmca.com https://*.dmca.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
