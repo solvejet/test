@@ -141,6 +141,28 @@ const withPWA = require("next-pwa")({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+
+  // Replace domains with remotePatterns for better security control
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.dmca.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "widget.clutch.co",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.goodfirms.co",
+        pathname: "**",
+      },
+    ],
+  },
+
   // Ensure Next.js can properly handle PWA static assets
   webpack: (
     config: Configuration,

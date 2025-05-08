@@ -428,6 +428,8 @@ export default function Footer() {
                                         <Image
                                             src="https://images.dmca.com/Badges/dmca-badge-w100-5x1-08.png?ID=8d403873-c871-4d0c-ae14-308185830d09"
                                             alt="DMCA.com Protection Status"
+                                            width={100}
+                                            height={20}
                                             className="h-5 w-auto"
                                         />
                                     </a>

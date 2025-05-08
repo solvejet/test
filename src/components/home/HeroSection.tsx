@@ -108,36 +108,46 @@ export default function HeroSection(): JSX.Element {
                 <>
                     <Script id="clutch-widget-script">
                         {`
-                            // Load Clutch Widget
-                            (function() {
-                                var script = document.createElement('script');
-                                script.async = true;
-                                script.src = "https://widget.clutch.co/static/js/widget.js";
-                                script.onload = function() {
-                                    if (typeof window.clutchWidgetLoaded === 'function') {
-                                        window.clutchWidgetLoaded();
-                                    }
-                                };
-                                document.body.appendChild(script);
-                            })();
-                        `}
+                // Load Clutch Widget with better error handling
+                (function() {
+                    var script = document.createElement('script');
+                    script.async = true;
+                    script.src = "https://widget.clutch.co/static/js/widget.js";
+                    script.nonce = "${nonce}"; // Add nonce attribute
+                    script.onload = function() {
+                        console.log("Clutch widget script loaded successfully");
+                        if (typeof window.clutchWidgetLoaded === 'function') {
+                            window.clutchWidgetLoaded();
+                        }
+                    };
+                    script.onerror = function(e) {
+                        console.error("Error loading Clutch widget script:", e);
+                    };
+                    document.body.appendChild(script);
+                })();
+            `}
                     </Script>
 
                     <Script id="goodfirms-widget-script">
                         {`
-                            // Load GoodFirms Widget
-                            (function() {
-                                var script = document.createElement('script');
-                                script.async = true;
-                                script.src = "https://assets.goodfirms.co/assets/js/widget.min.js";
-                                script.onload = function() {
-                                    if (typeof window.goodFirmsWidgetLoaded === 'function') {
-                                        window.goodFirmsWidgetLoaded();
-                                    }
-                                };
-                                document.body.appendChild(script);
-                            })();
-                        `}
+                // Load GoodFirms Widget with better error handling
+                (function() {
+                    var script = document.createElement('script');
+                    script.async = true;
+                    script.src = "https://assets.goodfirms.co/assets/js/widget.min.js";
+                    script.nonce = "${nonce}"; // Add nonce attribute
+                    script.onload = function() {
+                        console.log("GoodFirms widget script loaded successfully");
+                        if (typeof window.goodFirmsWidgetLoaded === 'function') {
+                            window.goodFirmsWidgetLoaded();
+                        }
+                    };
+                    script.onerror = function(e) {
+                        console.error("Error loading GoodFirms widget script:", e);
+                    };
+                    document.body.appendChild(script);
+                })();
+            `}
                     </Script>
                 </>
             )}
@@ -177,7 +187,7 @@ export default function HeroSection(): JSX.Element {
                             {/* Paragraph (left/top on mobile) */}
                             <div className="lg:w-1/2 max-w-2xl">
                                 <p
-                                    className={`text-base sm:text-lg leading-relaxed text-light-text-secondary dark:text-dark-text-secondary transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+                                    className={`text-base sm:text-md leading-relaxed text-light-text-secondary dark:text-dark-text-secondary transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
                                     style={{ transitionDelay: '400ms' }}
                                 >
                                     We turn complex business requirements into exceptional software solutions.
@@ -217,11 +227,9 @@ export default function HeroSection(): JSX.Element {
 
                                             {/* GoodFirms Widget */}
                                             <div
-                                                className={`goodfirm-widget rounded-md overflow-hidden h-[45px] min-w-[180px] ${!goodFirmsLoaded ? 'bg-light-surface dark:bg-dark-surface' : ''}`}
+                                                className={`goodfirms-widget rounded-md overflow-hidden h-[45px] min-w-[180px] ${!goodFirmsLoaded ? 'bg-light-surface dark:bg-dark-surface' : ''}`}
                                                 data-widget-type="goodfirms-widget-t3"
                                                 data-widget-pattern="star-basic"
-                                                data-height="45"
-                                                data-width="180"
                                                 data-company-id="173028"
                                             >
                                                 {!goodFirmsLoaded && (

@@ -9,9 +9,10 @@ interface ScriptProps {
     children: string;
     async?: boolean;
     defer?: boolean;
+    src?: string;
 }
 
-export default function Script({ id, children, async = false, defer = false }: ScriptProps) {
+export default function Script({ id, children, async = false, defer = false, src }: ScriptProps) {
     // Get nonce from context
     const nonce = useNonce();
     const scriptRef = useRef<HTMLScriptElement | null>(null);
@@ -27,12 +28,15 @@ export default function Script({ id, children, async = false, defer = false }: S
         if (id) script.id = id;
         if (async) script.async = true;
         if (defer) script.defer = true;
+        if (src) script.src = src;
 
         // This is the crucial part - setting the nonce
         script.setAttribute('nonce', nonce);
 
-        // Set innerHTML safely
-        script.innerHTML = children;
+        // Set innerHTML safely for inline scripts
+        if (children && !src) {
+            script.innerHTML = children;
+        }
 
         // Store ref for cleanup
         scriptRef.current = script;
@@ -46,7 +50,7 @@ export default function Script({ id, children, async = false, defer = false }: S
                 document.body.removeChild(scriptRef.current);
             }
         };
-    }, [id, children, async, defer, nonce]);
+    }, [id, children, async, defer, nonce, src]);
 
     return null;
 }
