@@ -9,8 +9,8 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 // Add 'unsafe-eval' only in development mode
 const scriptSrc = isDevelopment
-  ? "'self' 'nonce-PLACEHOLDER' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com"
-  : "'self' 'nonce-PLACEHOLDER' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com";
+  ? "'self' 'nonce-PLACEHOLDER' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co"
+  : "'self' 'nonce-PLACEHOLDER' https://cdnjs.cloudflare.com https://cdn.amplitude.com https://amplitude.com https://www.googletagmanager.com https://www.google-analytics.com https://widget.clutch.co https://assets.goodfirms.co";
 
 // Security headers to apply to all responses
 const securityHeaders = {
@@ -19,9 +19,9 @@ const securityHeaders = {
     `script-src ${scriptSrc}; ` +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data: blob: https://*.solvejet.net https://*.clutch.co https://www.google-analytics.com https://www.googletagmanager.com; " +
-    "connect-src 'self' https://*.solvejet.net https://api.solvejet.net https://*.clutch.co https://cdn.amplitude.com https://amplitude.com https://www.google-analytics.com https://www.googletagmanager.com; " +
-    "frame-src 'self' https://*.clutch.co; " +
+    "img-src 'self' data: blob: https://*.solvejet.net https://*.clutch.co https://*.goodfirms.co https://www.google-analytics.com https://www.googletagmanager.com; " +
+    "connect-src 'self' https://*.solvejet.net https://api.solvejet.net https://*.clutch.co https://*.goodfirms.co https://cdn.amplitude.com https://amplitude.com https://www.google-analytics.com https://www.googletagmanager.com; " +
+    "frame-src 'self' https://*.clutch.co https://*.goodfirms.co https://widget.goodfirms.co https://widget.clutch.co; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
     "form-action 'self'; " +

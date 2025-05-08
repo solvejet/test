@@ -104,11 +104,6 @@ body {
     @apply bg-light-surface dark:bg-dark-surface rounded-lg p-6 shadow-md;
   }
 
-  /* Blur effect for header */
-  .header-blur {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
 }
 
 /* Nav items styling */

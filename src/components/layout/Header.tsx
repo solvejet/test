@@ -28,7 +28,6 @@ const navItems: NavItem[] = [
             { name: 'Web Development', href: '/what-we-do/web-development' },
             { name: 'Mobile App Development', href: '/what-we-do/app-development' },
             { name: 'AI/ML Solutions', href: '/what-we-do/ai-ml' },
-
         ]
     },
     {
@@ -40,8 +39,6 @@ const navItems: NavItem[] = [
             { name: 'E-commerce', href: '/industries/e-commerce' },
             { name: 'Logistics', href: '/industries/logistics' },
             { name: 'Travel & Hospitality', href: '/industries/travel-hospitality' },
-            { name: 'Education', href: '/industries/education' },
-            { name: 'Retail', href: '/industries/retail' },
         ]
     },
     {
@@ -69,6 +66,7 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const headerRef = useRef<HTMLElement>(null);
+    const headerContentRef = useRef<HTMLDivElement>(null);
     const mobileButtonRef = useRef<HTMLButtonElement>(null);
 
     // Set CSS variable for header height and track scroll position
@@ -80,6 +78,7 @@ export default function Header() {
         }
 
         const handleScroll = () => {
+            // Update isScrolled state - immediate change, no progress tracking
             setIsScrolled(window.scrollY > 10);
         };
 
@@ -125,24 +124,29 @@ export default function Header() {
         <>
             <header
                 ref={headerRef}
-                className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                    ? 'bg-light-background/85 dark:bg-dark-background/85 header-blur shadow-sm'
-                    : 'bg-transparent'
+                className={`container mx-auto sticky top-0 left-0 right-0 z-50 transition-all duration-300 flex justify-center ${isScrolled ? 'sm:py-1 py-0' : 'sm:py-4 py-2'
                     }`}
             >
-                <div className="container mx-auto px-4 py-3">
-                    <div className="flex items-center justify-between h-14">
+                <div
+                    ref={headerContentRef}
+                    className={`px-6 transition-all duration-300 ${isScrolled
+                        ? 'sm:w-[75%] sm:rounded-full w-full bg-light-background/95 dark:bg-dark-background/95 backdrop-blur-md shadow-md'
+                        : 'w-full bg-transparent'
+                        }`}
+                >
+                    <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-16'
+                        }`}>
                         {/* Logo */}
-                        <SolveJetLogo className="text-light-text-primary dark:text-dark-text-primary h-9 w-auto" />
+                        <SolveJetLogo className="text-light-text-primary dark:text-dark-text-primary h-8 w-auto" />
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center space-x-8">
+                        <nav className="hidden md:flex items-center">
                             {navItems.map((item) => (
-                                <div key={item.name} className="relative group">
+                                <div key={item.name} className="relative group px-2 lg:px-4">
                                     {item.subItems ? (
                                         <button
                                             onClick={() => toggleDropdown(item.name)}
-                                            className={`text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors flex items-center text-sm font-medium nav-item ${pathname === item.href || pathname?.startsWith(`${item.href}/`)
+                                            className={`text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors flex items-center text-sm lg:text-base font-medium nav-item whitespace-nowrap ${pathname === item.href || pathname?.startsWith(`${item.href}/`)
                                                 ? 'text-primary-blue font-medium'
                                                 : ''
                                                 }`}
@@ -160,7 +164,7 @@ export default function Header() {
                                     ) : (
                                         <Link
                                             href={item.href}
-                                            className={`text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors flex items-center text-sm font-medium nav-item ${pathname === item.href || pathname?.startsWith(`${item.href}/`)
+                                            className={`text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors flex items-center text-sm lg:text-base font-medium nav-item whitespace-nowrap ${pathname === item.href || pathname?.startsWith(`${item.href}/`)
                                                 ? 'text-primary-blue font-medium'
                                                 : ''
                                                 }`}
@@ -191,11 +195,11 @@ export default function Header() {
 
                         {/* Right side with theme toggle and mobile menu button */}
                         <div className="flex items-center">
-                            {/* Get Started Button - Desktop with improved styling */}
+                            {/* Get Started Button - Tablet and Desktop */}
                             <div className="hidden md:flex items-center">
                                 <Link
                                     href="/contact"
-                                    className="btn-talk-primary flex items-center justify-center space-x-1 px-5 py-2.5 bg-primary-blue text-white rounded-full text-sm font-medium overflow-hidden relative"
+                                    className="btn-talk-primary flex items-center justify-center space-x-1 px-3 lg:px-4 py-2 lg:py-2.5 bg-primary-blue text-white rounded-full text-sm lg:text-base font-medium overflow-hidden relative whitespace-nowrap"
                                 >
                                     <span className="relative z-10">Let&apos;s Talk</span>
                                     <ArrowRight className="ml-1 relative z-10 group-hover:translate-x-1 transition-transform duration-300" size={16} />
@@ -203,7 +207,7 @@ export default function Header() {
                                 </Link>
 
                                 {/* Vertical divider */}
-                                <div className="mx-4 h-6 w-px bg-light-border dark:bg-dark-border"></div>
+                                <div className="mx-3 h-6 w-px bg-light-border dark:bg-dark-border"></div>
 
                                 <ThemeToggle />
                             </div>
